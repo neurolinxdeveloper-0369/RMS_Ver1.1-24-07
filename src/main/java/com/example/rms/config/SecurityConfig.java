@@ -47,6 +47,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll() // Allow login API without auth
+                .requestMatchers("/api/ota/download/**").permitAll() // Allow ESP32 to download firmware without auth
                 .requestMatchers("/api/**").authenticated() // Require auth for API endpoints
                 .anyRequest().permitAll() // Allow static resources and frontend
             );
