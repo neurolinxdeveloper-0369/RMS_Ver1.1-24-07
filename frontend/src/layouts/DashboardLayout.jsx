@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { 
+import {
   Compass,
   Server,
   Users,
@@ -80,7 +80,7 @@ const DashboardLayout = () => {
 
     const updateTime = () => {
       const now = new Date();
-      setTime(now.toLocaleString('en-IN', { 
+      setTime(now.toLocaleString('en-IN', {
         timeZone: 'Asia/Kolkata',
         day: '2-digit',
         month: '2-digit',
@@ -108,12 +108,12 @@ const DashboardLayout = () => {
         <div className="sidebar-header">
           {isCollapsed ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyItems: 'center', width: '100%' }}>
-              <img 
-                src={windStreamLogo} 
-                alt="WindStream Logo" 
-                className="logo-img-collapsed" 
-                style={{ width: '28px', height: 'auto', cursor: 'pointer' }} 
-                onClick={toggleSidebar} 
+              <img
+                src={windStreamLogo}
+                alt="WindStream Logo"
+                className="logo-img-collapsed"
+                style={{ width: '28px', height: 'auto', cursor: 'pointer' }}
+                onClick={toggleSidebar}
                 title="Expand Sidebar"
               />
             </div>
@@ -133,24 +133,24 @@ const DashboardLayout = () => {
             </>
           )}
         </div>
-        
+
         <nav className="sidebar-nav">
           <div className="sidebar-section-header">General</div>
-          
-          <NavLink to="/dashboard" end className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`}>
+
+          <NavLink to="/dashboard" end className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <div className="sidebar-icon"><Compass size={18} /></div>
             <span className="sidebar-label">Overview</span>
             <span className="sidebar-tooltip">Overview</span>
           </NavLink>
 
-          <NavLink to="/dashboard/devices" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/dashboard/devices" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <div className="sidebar-icon"><Server size={18} /></div>
             <span className="sidebar-label">Device Management</span>
             <span className="sidebar-tooltip">Device Management</span>
           </NavLink>
 
           {userRole === 'Admin' && (
-            <NavLink to="/dashboard/users" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`}>
+            <NavLink to="/dashboard/users" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <div className="sidebar-icon"><Users size={18} /></div>
               <span className="sidebar-label">User Management</span>
               <span className="sidebar-tooltip">User Management</span>
@@ -159,7 +159,7 @@ const DashboardLayout = () => {
 
           {/* Reports Collapsible sub-menu */}
           <div className="sidebar-submenu-wrapper">
-            <div 
+            <div
               className={`sidebar-link ${isReportsOpen ? 'submenu-parent-open' : ''}`}
               onClick={() => {
                 if (isCollapsed) {
@@ -174,26 +174,26 @@ const DashboardLayout = () => {
               <div className="sidebar-icon"><FileText size={18} /></div>
               <span className="sidebar-label">Reports</span>
               {!isCollapsed && (
-                <ChevronDown 
-                  size={14} 
-                  style={{ 
-                    marginLeft: 'auto', 
-                    transform: isReportsOpen ? 'rotate(180deg)' : 'none', 
+                <ChevronDown
+                  size={14}
+                  style={{
+                    marginLeft: 'auto',
+                    transform: isReportsOpen ? 'rotate(180deg)' : 'none',
                     transition: 'transform 0.2s ease',
-                    color: 'var(--text-muted)' 
-                  }} 
+                    color: 'var(--text-muted)'
+                  }}
                 />
               )}
               <span className="sidebar-tooltip">Reports</span>
             </div>
-            
+
             {isReportsOpen && !isCollapsed && (
               <div className="sidebar-submenu" style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.25rem' }}>
-                <NavLink to="/dashboard/reports/instantaneous" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <NavLink to="/dashboard/reports/instantaneous" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
                   <div className="sidebar-icon"><Activity size={16} /></div>
                   <span className="sidebar-label">Instantaneous</span>
                 </NavLink>
-                <NavLink to="/dashboard/reports/history" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`}>
+                <NavLink to="/dashboard/reports/history" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
                   <div className="sidebar-icon"><History size={16} /></div>
                   <span className="sidebar-label">History</span>
                 </NavLink>
@@ -201,7 +201,7 @@ const DashboardLayout = () => {
             )}
           </div>
 
-          <NavLink to="/dashboard/analytics" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/dashboard/analytics" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <div className="sidebar-icon"><BarChart2 size={18} /></div>
             <span className="sidebar-label">Analytics</span>
             <span className="sidebar-tooltip">Analytics</span>
@@ -211,19 +211,19 @@ const DashboardLayout = () => {
           <div className="sidebar-nav-gap" style={{ height: '80px' }}></div>
           <div className="sidebar-divider-line" style={{ borderTop: '1px solid rgba(0, 0, 0, 0.08)', margin: '0 0.75rem 0.75rem 0.75rem' }}></div>
 
-          <NavLink to="/dashboard/settings" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/dashboard/settings" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <div className="sidebar-icon"><Settings size={18} /></div>
             <span className="sidebar-label">Settings</span>
             <span className="sidebar-tooltip">Settings</span>
           </NavLink>
 
-          <NavLink to="/dashboard/help" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/dashboard/help" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <div className="sidebar-icon"><HelpCircle size={18} /></div>
             <span className="sidebar-label">Help</span>
             <span className="sidebar-tooltip">Help</span>
           </NavLink>
 
-          <NavLink to="/dashboard/docs" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <NavLink to="/dashboard/docs" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             <div className="sidebar-icon"><BookOpen size={18} /></div>
             <span className="sidebar-label">Docs</span>
             <span className="sidebar-tooltip">Docs</span>
@@ -249,7 +249,7 @@ const DashboardLayout = () => {
             <input type="text" placeholder="Search" className="topbar-search-input" />
             <span className="search-shortcut">⌘+F</span>
           </div>
-          
+
           <div className="topbar-right-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             {/* Date and Time */}
             <div className="topbar-datetime" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
@@ -267,9 +267,9 @@ const DashboardLayout = () => {
                 <span className="profile-name" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', textTransform: 'capitalize' }}>{userName.split('@')[0]}</span>
                 <span className="profile-email" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{userRole}</span>
               </div>
-              <button 
-                onClick={handleLogout} 
-                className="btn-logout-topbar" 
+              <button
+                onClick={handleLogout}
+                className="btn-logout-topbar"
                 title="Logout"
                 style={{
                   background: 'none',

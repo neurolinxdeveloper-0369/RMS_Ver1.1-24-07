@@ -74,9 +74,10 @@ public class OtaController {
     @GetMapping("/download/{deviceId}")
     public ResponseEntity<Resource> downloadFirmware(@PathVariable String deviceId) {
         try {
-            // Clean up the device ID in case the ESP32 accidentally included a space or newline (\r or \n)
+            // Clean up the device ID in case the ESP32 accidentally included a space or
+            // newline (\r or \n)
             deviceId = deviceId.trim().replaceAll("[\\r\\n]", "");
-            
+
             Path filePath = Paths.get(UPLOAD_DIR, "device-" + deviceId + ".bin");
 
             if (!Files.exists(filePath)) {
