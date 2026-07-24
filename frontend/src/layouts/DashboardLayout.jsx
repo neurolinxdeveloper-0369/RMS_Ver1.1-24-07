@@ -73,6 +73,11 @@ const DashboardLayout = () => {
 
 
   useEffect(() => {
+    // Force light mode completely, no matter what localStorage or OS says
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('theme', 'light');
+    setIsDark(false);
+
     const updateTime = () => {
       const now = new Date();
       setTime(now.toLocaleString('en-IN', { 
