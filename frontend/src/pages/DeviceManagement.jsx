@@ -3,13 +3,14 @@ import { Search, Plus, Edit2, Trash2, Eye, Wind, Sun, Zap, Wifi, WifiOff, Clock,
 import toast from 'react-hot-toast';
 
 const deviceTypes = ['Solar', 'Wind', 'Hybrid'];
-const statusOptions = ['Active', 'Idle', 'Offline'];
+const statusOptions = ['Online', 'Offline'];
 const regions = ['All Regions', 'North', 'South', 'East', 'West'];
 
 
 
-const statusColors = { Active: '#10B981', Idle: '#F59E0B', Offline: '#EF4444' };
-const statusBg = { Active: 'rgba(16,185,129,0.1)', Idle: 'rgba(245,158,11,0.1)', Offline: 'rgba(239,68,68,0.1)' };
+const statusColors = { Online: '#10B981', Active: '#10B981', Idle: '#10B981', Offline: '#EF4444' };
+const statusBg = { Online: 'rgba(16,185,129,0.1)', Active: 'rgba(16,185,129,0.1)', Idle: 'rgba(16,185,129,0.1)', Offline: 'rgba(239,68,68,0.1)' };
+const displayStatus = (status) => (status === 'Active' || status === 'Idle') ? 'Online' : 'Offline';
 const typeColors = { Solar: '#FBBF24', Wind: '#34D399', Hybrid: '#60A5FA' };
 const typeBg = { Solar: 'rgba(251,191,36,0.12)', Wind: 'rgba(52,211,153,0.12)', Hybrid: 'rgba(96,165,250,0.12)' };
 const typeIcon = { Solar: '☀️', Wind: '💨', Hybrid: '⚡' };
@@ -176,7 +177,9 @@ const DeviceManagement = () => {
       (d.id && d.id.toLowerCase().includes(search.toLowerCase())) ||
       (d.location && d.location.toLowerCase().includes(search.toLowerCase()));
     const matchType = typeFilter === 'All' || d.type === typeFilter;
-    const matchStatus = statusFilter === 'All' || d.status === statusFilter;
+    const matchStatus = statusFilter === 'All' ||
+      (statusFilter === 'Online' && (d.status === 'Active' || d.status === 'Idle')) ||
+      (statusFilter === 'Offline' && d.status === 'Offline');
     const matchRegion = regionFilter === 'All Regions' || d.region === regionFilter;
     
     // Mapped logic: if neither checked, show none. If both checked, show all.
@@ -187,8 +190,7 @@ const DeviceManagement = () => {
 
   const totalPages = Math.ceil(filtered.length / ROWS);
   const paginated = filtered.slice((page - 1) * ROWS, page * ROWS);
-  const activeCount = devices.filter(d => d.status === 'Active').length;
-  const idleCount = devices.filter(d => d.status === 'Idle').length;
+  const onlineCount = devices.filter(d => d.status === 'Active' || d.status === 'Idle').length;
   const offlineCount = devices.filter(d => d.status === 'Offline').length;
 
   const toggleSelect = (id) => {
@@ -236,11 +238,10 @@ const DeviceManagement = () => {
       </div>
 
       {/* KPI Summary Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
         {[
           { label: 'Total Devices', value: devices.length, icon: '📡', color: '#00A1E6', bg: 'rgba(0,161,230,0.08)' },
-          { label: 'Active', value: activeCount, icon: '✅', color: '#10B981', bg: 'rgba(16,185,129,0.08)' },
-          { label: 'Idle', value: idleCount, icon: '⏸', color: '#F59E0B', bg: 'rgba(245,158,11,0.08)' },
+          { label: 'Online', value: onlineCount, icon: '✅', color: '#10B981', bg: 'rgba(16,185,129,0.08)' },
           { label: 'Offline', value: offlineCount, icon: '❌', color: '#EF4444', bg: 'rgba(239,68,68,0.08)' },
         ].map(kpi => (
           <div key={kpi.label} style={{
@@ -376,7 +377,7 @@ const DeviceManagement = () => {
                       display: 'inline-flex', alignItems: 'center', gap: '0.3rem'
                     }}>
                       <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: statusColors[device.status], display: 'inline-block' }}></span>
-                      {device.status}
+                      {displayStatus(device.status)}
                     </span>
                   </td>
                   <td style={{ padding: '0.75rem 1rem', fontSize: '0.8rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{device.lastSeen}</td>
