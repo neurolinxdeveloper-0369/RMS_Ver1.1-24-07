@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Eye, Wind, Sun, Zap, Wifi, WifiOff, Clock, Filter } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { apiFetch } from '../utils/api';
 
 const deviceTypes = ['Solar', 'Wind', 'Hybrid'];
 const statusOptions = ['Active', 'Idle', 'Offline'];
@@ -39,7 +40,7 @@ const DeviceManagement = () => {
   const [confirmSwitch, setConfirmSwitch] = useState(null);
 
   const fetchDevices = () => {
-    fetch('/api/devices', {
+    apiFetch('/api/devices', {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
       .then(res => res.json())
@@ -61,7 +62,7 @@ const DeviceManagement = () => {
     let interval;
     if (telemetryDevice) {
       const fetchTelemetry = () => {
-        fetch(`/api/devices/${telemetryDevice.id}/telemetry`, {
+        apiFetch(`/api/devices/${telemetryDevice.id}/telemetry`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         })
           .then(res => res.json())
@@ -120,7 +121,7 @@ const DeviceManagement = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    fetch(`/api/devices/${editDevice.id}`, {
+    apiFetch(`/api/devices/${editDevice.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -151,7 +152,7 @@ const DeviceManagement = () => {
     // Optimistic update
     setTelemetryData(prev => prev.map(m => m.meterId === meter.meterId ? { ...m, switchState: newState } : m));
 
-    fetch(`/api/devices/${telemetryDevice.id}/meters/${meter.meterId}/switch`, {
+    apiFetch(`/api/devices/${telemetryDevice.id}/meters/${meter.meterId}/switch`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
