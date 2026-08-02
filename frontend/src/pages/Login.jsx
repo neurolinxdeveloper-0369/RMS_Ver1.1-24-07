@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import windStreamLogo from '../assets/WindStream.png';
-import { API_BASE_URL } from '../utils/api';
 
 /* ─── Inject keyframes + focus styles once ─── */
 if (!document.getElementById('login-styles')) {
@@ -60,7 +59,7 @@ const Login = () => {
     setLoading(true);
     
     try {
-      const res = await fetch(API_BASE_URL + '/api/auth/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: email, password })

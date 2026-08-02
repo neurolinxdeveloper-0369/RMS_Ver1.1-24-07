@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Eye, Wind, Sun, Zap, Wifi, WifiOff, Clock, Filter } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { apiFetch } from '../utils/api';
 
 const deviceTypes = ['Solar', 'Wind', 'Hybrid'];
 const statusOptions = ['Active', 'Idle', 'Offline'];
@@ -31,8 +30,8 @@ const DeviceManagement = () => {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editDevice, setEditDevice] = useState(null);
-  const [editFormData, setEditFormData] = useState({
-    location: '', capacity: '', state: '', city: '', region: '', division: '', latitude: '', longitude: '', meters: []
+  const [editFormData, setEditFormData] = useState({ 
+    location: '', capacity: '', state: '', city: '', region: '', division: '', latitude: '', longitude: '', meters: [] 
   });
   const [fetchingLocation, setFetchingLocation] = useState(false);
   const [telemetryDevice, setTelemetryDevice] = useState(null);
@@ -40,7 +39,7 @@ const DeviceManagement = () => {
   const [confirmSwitch, setConfirmSwitch] = useState(null);
 
   const fetchDevices = () => {
-    apiFetch('/api/devices', {
+    fetch('/api/devices', {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
       .then(res => res.json())
@@ -62,7 +61,7 @@ const DeviceManagement = () => {
     let interval;
     if (telemetryDevice) {
       const fetchTelemetry = () => {
-        apiFetch(`/api/devices/${telemetryDevice.id}/telemetry`, {
+        fetch(`/api/devices/${telemetryDevice.id}/telemetry`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         })
           .then(res => res.json())
@@ -121,9 +120,9 @@ const DeviceManagement = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    apiFetch(`/api/devices/${editDevice.id}`, {
+    fetch(`/api/devices/${editDevice.id}`, {
       method: 'PUT',
-      headers: {
+      headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
@@ -144,31 +143,31 @@ const DeviceManagement = () => {
   const handleToggleSwitch = (meter, newState) => {
     setConfirmSwitch({ meter, newState });
   };
-
+  
   const executeToggleSwitch = () => {
     if (!confirmSwitch) return;
     const { meter, newState } = confirmSwitch;
-
+    
     // Optimistic update
     setTelemetryData(prev => prev.map(m => m.meterId === meter.meterId ? { ...m, switchState: newState } : m));
-
-    apiFetch(`/api/devices/${telemetryDevice.id}/meters/${meter.meterId}/switch`, {
+    
+    fetch(`/api/devices/${telemetryDevice.id}/meters/${meter.meterId}/switch`, {
       method: 'PUT',
-      headers: {
+      headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify({ state: newState })
     })
-      .then(res => {
-        if (res.ok) toast.success("Switch toggled successfully!");
-        else toast.error("Failed to toggle switch");
-      })
-      .catch(err => {
-        console.error('Failed to toggle switch', err);
-        toast.error("Failed to toggle switch");
-      });
-
+    .then(res => {
+      if(res.ok) toast.success("Switch toggled successfully!");
+      else toast.error("Failed to toggle switch");
+    })
+    .catch(err => {
+      console.error('Failed to toggle switch', err);
+      toast.error("Failed to toggle switch");
+    });
+    
     setConfirmSwitch(null);
   };
 
@@ -179,10 +178,10 @@ const DeviceManagement = () => {
     const matchType = typeFilter === 'All' || d.type === typeFilter;
     const matchStatus = statusFilter === 'All' || d.status === statusFilter;
     const matchRegion = regionFilter === 'All Regions' || d.region === regionFilter;
-
+    
     // Mapped logic: if neither checked, show none. If both checked, show all.
     const matchMapped = (showMapped && d.mapped) || (showUnmapped && !d.mapped);
-
+    
     return matchSearch && matchType && matchStatus && matchRegion && matchMapped;
   });
 
@@ -210,25 +209,25 @@ const DeviceManagement = () => {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', color: 'var(--text-primary)', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={showMapped}
-              onChange={(e) => {
-                setShowMapped(e.target.checked);
-                if (e.target.checked) setShowUnmapped(false);
-              }}
+            <input 
+              type="checkbox" 
+              checked={showMapped} 
+              onChange={(e) => { 
+                setShowMapped(e.target.checked); 
+                if (e.target.checked) setShowUnmapped(false); 
+              }} 
               style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#00A1E6' }}
             />
             Mapped
           </label>
           <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', color: 'var(--text-primary)', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={showUnmapped}
-              onChange={(e) => {
-                setShowUnmapped(e.target.checked);
-                if (e.target.checked) setShowMapped(false);
-              }}
+            <input 
+              type="checkbox" 
+              checked={showUnmapped} 
+              onChange={(e) => { 
+                setShowUnmapped(e.target.checked); 
+                if (e.target.checked) setShowMapped(false); 
+              }} 
               style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#00A1E6' }}
             />
             Unmapped
@@ -445,19 +444,19 @@ const DeviceManagement = () => {
           </div>
         </div>
       )}
-
+      
       {/* Edit Modal */}
       {editDevice && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999 }}>
           <div style={{ background: 'var(--bg-surface)', padding: '2rem', borderRadius: '12px', width: '500px', maxWidth: '90%', maxHeight: '90vh', overflowY: 'auto' }}>
             <h2 style={{ margin: '0 0 1.5rem', color: 'var(--text-primary)' }}>Edit {editDevice.id}</h2>
             <form onSubmit={handleEditSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-
+              
               {editFormData.meters.map((meter, index) => (
                 <div key={meter.meterId} style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                   <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Meter {meter.meterId} Type *</label>
-                  <select
-                    required
+                  <select 
+                    required 
                     value={meter.type}
                     onChange={(e) => {
                       const newMeters = [...editFormData.meters];
@@ -479,9 +478,9 @@ const DeviceManagement = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                     <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>State</label>
-                    <input
-                      type="text"
-                      value={editFormData.state}
+                    <input 
+                      type="text" 
+                      value={editFormData.state} 
                       onChange={(e) => setEditFormData({ ...editFormData, state: e.target.value })}
                       placeholder="e.g. Maharashtra"
                       style={{ width: '100%', boxSizing: 'border-box', padding: '0.6rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface)', color: 'var(--text-primary)' }}
@@ -489,9 +488,9 @@ const DeviceManagement = () => {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                     <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>City</label>
-                    <input
-                      type="text"
-                      value={editFormData.city}
+                    <input 
+                      type="text" 
+                      value={editFormData.city} 
                       onChange={(e) => setEditFormData({ ...editFormData, city: e.target.value })}
                       placeholder="e.g. Mumbai"
                       style={{ width: '100%', boxSizing: 'border-box', padding: '0.6rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface)', color: 'var(--text-primary)' }}
@@ -499,9 +498,9 @@ const DeviceManagement = () => {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                     <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Region</label>
-                    <input
-                      type="text"
-                      value={editFormData.region}
+                    <input 
+                      type="text" 
+                      value={editFormData.region} 
                       onChange={(e) => setEditFormData({ ...editFormData, region: e.target.value })}
                       placeholder="e.g. West"
                       style={{ width: '100%', boxSizing: 'border-box', padding: '0.6rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface)', color: 'var(--text-primary)' }}
@@ -509,9 +508,9 @@ const DeviceManagement = () => {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                     <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Division</label>
-                    <input
-                      type="text"
-                      value={editFormData.division}
+                    <input 
+                      type="text" 
+                      value={editFormData.division} 
                       onChange={(e) => setEditFormData({ ...editFormData, division: e.target.value })}
                       placeholder="e.g. Mumbai Metro"
                       style={{ width: '100%', boxSizing: 'border-box', padding: '0.6rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface)', color: 'var(--text-primary)' }}
@@ -519,26 +518,26 @@ const DeviceManagement = () => {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                     <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Latitude</label>
-                    <input
+                    <input 
                       type="number" step="any"
-                      value={editFormData.latitude}
+                      value={editFormData.latitude} 
                       onChange={(e) => setEditFormData({ ...editFormData, latitude: e.target.value })}
                       style={{ width: '100%', boxSizing: 'border-box', padding: '0.6rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface)', color: 'var(--text-primary)' }}
                     />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                     <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Longitude</label>
-                    <input
+                    <input 
                       type="number" step="any"
-                      value={editFormData.longitude}
+                      value={editFormData.longitude} 
                       onChange={(e) => setEditFormData({ ...editFormData, longitude: e.target.value })}
                       style={{ width: '100%', boxSizing: 'border-box', padding: '0.6rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface)', color: 'var(--text-primary)' }}
                     />
                   </div>
                 </div>
-
-                <button
-                  type="button"
+                
+                <button 
+                  type="button" 
                   onClick={handleFetchLatLong}
                   disabled={fetchingLocation}
                   style={{ width: '100%', padding: '0.65rem', fontSize: '0.85rem', background: 'rgba(0,161,230,0.1)', color: '#00A1E6', border: '1px solid rgba(0,161,230,0.3)', borderRadius: '8px', cursor: fetchingLocation ? 'wait' : 'pointer', fontWeight: 600, marginTop: '0.3rem' }}
@@ -549,9 +548,9 @@ const DeviceManagement = () => {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                 <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Capacity (Optional)</label>
-                <input
-                  type="number"
-                  value={editFormData.capacity}
+                <input 
+                  type="number" 
+                  value={editFormData.capacity} 
                   onChange={(e) => setEditFormData({ ...editFormData, capacity: e.target.value })}
                   placeholder="e.g. 150"
                   style={{ padding: '0.6rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-surface-light)', color: 'var(--text-primary)' }}
@@ -578,7 +577,7 @@ const DeviceManagement = () => {
               </div>
               <button onClick={() => setTelemetryDevice(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--text-muted)' }}>✕</button>
             </div>
-
+            
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {telemetryData.map(meter => {
                 // Calculate age using 10-second timeout rule
@@ -589,37 +588,37 @@ const DeviceManagement = () => {
                   const diffSeconds = (now - updatedDate) / 1000;
                   isOffline = diffSeconds > 10;
                 }
-
+                
                 return (
                   <div key={meter.meterId} style={{ border: `1px solid ${isOffline ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, borderRadius: '12px', padding: '1.25rem', background: 'var(--bg-surface-light)', position: 'relative' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 0 1rem' }}>
                       <h3 style={{ margin: 0, fontSize: '1rem', color: 'var(--text-primary)' }}>Meter: {meter.customMeterId || meter.meterId} <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 400 }}>({meter.meterType || 'Unknown Type'})</span></h3>
-
+                      
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                         {meter.meterType === 'Inverter' && (
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                             <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>INVERTER SWITCH</span>
                             <label style={{ position: 'relative', display: 'inline-block', width: '36px', height: '20px', opacity: userRole === 'Viewer' ? 0.5 : 1 }}>
-                              <input
-                                type="checkbox"
-                                checked={meter.switchState || false}
+                              <input 
+                                type="checkbox" 
+                                checked={meter.switchState || false} 
                                 onChange={(e) => {
                                   if (userRole !== 'Viewer') {
                                     handleToggleSwitch(meter, e.target.checked);
                                   } else {
                                     alert('Viewers do not have permission to physically toggle switches.');
                                   }
-                                }}
+                                }} 
                                 disabled={userRole === 'Viewer'}
-                                style={{ opacity: 0, width: 0, height: 0 }}
+                                style={{ opacity: 0, width: 0, height: 0 }} 
                               />
-                              <span style={{
-                                position: 'absolute', cursor: userRole === 'Viewer' ? 'not-allowed' : 'pointer', top: 0, left: 0, right: 0, bottom: 0,
-                                backgroundColor: meter.switchState ? '#10B981' : '#CBD5E1', borderRadius: '20px',
-                                transition: '0.3s'
+                              <span style={{ 
+                                position: 'absolute', cursor: userRole === 'Viewer' ? 'not-allowed' : 'pointer', top: 0, left: 0, right: 0, bottom: 0, 
+                                backgroundColor: meter.switchState ? '#10B981' : '#CBD5E1', borderRadius: '20px', 
+                                transition: '0.3s' 
                               }}>
                                 <span style={{
-                                  position: 'absolute', height: '16px', width: '16px', left: meter.switchState ? '18px' : '2px', bottom: '2px',
+                                  position: 'absolute', height: '16px', width: '16px', left: meter.switchState ? '18px' : '2px', bottom: '2px', 
                                   backgroundColor: 'white', borderRadius: '50%', transition: '0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
                                 }}></span>
                               </span>
@@ -627,12 +626,12 @@ const DeviceManagement = () => {
                           </div>
                         )}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: isOffline ? '#EF4444' : '#10B981', display: 'inline-block', boxShadow: `0 0 8px ${isOffline ? '#EF4444' : '#10B981'}` }}></span>
-                          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: isOffline ? '#EF4444' : '#10B981', textTransform: 'uppercase' }}>{isOffline ? 'Offline' : 'Live'}</span>
+                           <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: isOffline ? '#EF4444' : '#10B981', display: 'inline-block', boxShadow: `0 0 8px ${isOffline ? '#EF4444' : '#10B981'}` }}></span>
+                           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: isOffline ? '#EF4444' : '#10B981', textTransform: 'uppercase' }}>{isOffline ? 'Offline' : 'Live'}</span>
                         </div>
                       </div>
                     </div>
-
+                    
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '1rem' }}>
                       <div style={{ background: 'var(--bg-surface)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                         <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.2rem' }}>POWER</div>

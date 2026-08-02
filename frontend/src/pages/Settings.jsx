@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Bell, Shield, Sliders, Globe, Eye, EyeOff, UploadCloud } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { apiFetch } from '../utils/api';
 
 const ALL_TABS = [
   { id: 'general', label: 'General', icon: '⚙️' },
@@ -45,7 +44,7 @@ const Settings = () => {
   }, [activeTab]);
 
   const fetchTickets = () => {
-    apiFetch('/api/tickets', {
+    fetch('/api/tickets', {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
       .then(res => res.json())
@@ -54,7 +53,7 @@ const Settings = () => {
   };
 
   useEffect(() => {
-    apiFetch('/api/devices', {
+    fetch('/api/devices', {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
       .then(res => res.json())
@@ -83,7 +82,7 @@ const Settings = () => {
       });
     }, 300);
 
-    apiFetch('/api/ota/update', {
+    fetch('/api/ota/update', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
       body: formData
@@ -112,7 +111,7 @@ const Settings = () => {
   const handleRaiseTicket = (e) => {
     e.preventDefault();
     setTicketStatus('Submitting...');
-    apiFetch('/api/tickets', {
+    fetch('/api/tickets', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(ticketData)
@@ -545,7 +544,7 @@ const Settings = () => {
                               <select 
                                 value={t.status}
                                 onChange={(e) => {
-                                  apiFetch(`/api/tickets/${t.id}/status`, {
+                                  fetch(`/api/tickets/${t.id}/status`, {
                                     method: 'PUT',
                                     headers: { 
                                       'Content-Type': 'application/json',
