@@ -26,7 +26,7 @@ const DeviceManagement = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [viewDevice, setViewDevice] = useState(null);
   const [showMapped, setShowMapped] = useState(true);
-  const [showUnmapped, setShowUnmapped] = useState(false);
+  const [showUnmapped, setShowUnmapped] = useState(true);
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editDevice, setEditDevice] = useState(null);
